@@ -1,0 +1,19 @@
+{
+  "name": "Reborn Companion V4",
+  "short_name": "Reborn V4",
+  "description": "Offline-first daily companion. Your data stays in this browser.",
+  "id": "./index.html",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0c1420",
+  "theme_color": "#111b2b",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
