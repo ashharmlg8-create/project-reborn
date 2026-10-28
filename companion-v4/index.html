@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#111b2b">
+  <meta name="description" content="Reborn Companion V4 — an offline-first personal daily planner and journal.">
+  <title>Reborn Companion V4</title>
+  <link rel="icon" type="image/svg+xml" href="./icon.svg">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./styles.css">
+  <script defer src="./core.js"></script>
+  <script defer src="./app.js"></script>
+</head>
+<body>
+<div id="app">
+  <header class="top">
+    <div class="brand"><div class="monogram">R</div><div><h1>Reborn Companion</h1><p>V4 · Personal command centre</p></div></div>
+    <div class="status" id="storage-status">Checking local storage…</div>
+  </header>
+  <nav aria-label="Primary navigation" id="navigation">
+    <button type="button" data-view="home" class="active">Today</button>
+    <button type="button" data-view="tasks">Tasks</button>
+    <button type="button" data-view="planner">Planner</button>
+    <button type="button" data-view="capture">Capture</button>
+    <button type="button" data-view="reflect">Reflect</button>
+    <button type="button" data-view="review">Weekly</button>
+    <button type="button" data-view="coach">Coach</button>
+    <button type="button" data-view="profile">Profile</button>
+    <button type="button" data-view="backup">Backup</button>
+  </nav>
+  <div class="notice" id="notice" aria-live="polite" hidden></div>
+  <main id="screen"><section class="panel"><h2>Loading Companion…</h2></section></main>
+  <footer>Local-first · No AI provider connected · Your original V3.25 is untouched</footer>
+</div>
+</body>
+</html>
