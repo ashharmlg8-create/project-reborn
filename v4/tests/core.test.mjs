@@ -34,3 +34,9 @@ test("no unconfirmed memory",()=>{
  assert.throws(()=>validateData(d));
 });
 test("routing does not execute tools",()=>assert.equal(routeFallback("Spent ₹200 on lunch").toolExecuted,false));
+
+test("budget input validates integer paise",()=>{
+ const d=blankData();d.budgets["2026-10"]=99950;assert.equal(validateData(d),d);
+ d.budgets["2026-13"]=100;assert.throws(()=>validateData(d));
+});
+test("negative monthly budget rejected",()=>{const d=blankData();d.budgets["2026-10"]=-1;assert.throws(()=>validateData(d))});
