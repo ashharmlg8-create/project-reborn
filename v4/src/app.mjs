@@ -186,11 +186,11 @@ function money(v){
     if(!confirm("CSV files are NOT encrypted. Export this month's expenses?"))return;
     const cell=v=>{
       const raw=String(v??"");
-      const safe=/^[\\t\\r\\n ]*[=+@-]/.test(raw)?"'"+raw:raw;
+      const safe=/^[\t\r\n ]*[=+@-]/.test(raw)?"'"+raw:raw;
       return '"'+safe.replace(/"/g,'""')+'"';
     };
     const rows=[["Date","Description","Category","Amount INR"],...items.map(x=>[x.date,x.title,x.category,(x.amountCents/100).toFixed(2)])];
-    download("reborn-expenses-"+month+".csv","\\uFEFF"+rows.map(row=>row.map(cell).join(",")).join("\\r\\n"),"text/csv;charset=utf-8");
+    download("reborn-expenses-"+month+".csv","\uFEFF"+rows.map(row=>row.map(cell).join(",")).join("\r\n"),"text/csv;charset=utf-8");
   },"btn ghost");
 }
 function habits(v){
