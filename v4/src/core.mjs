@@ -43,7 +43,7 @@ export function rupees(cents){
   return new Intl.NumberFormat("en-IN",{style:"currency",currency:"INR"}).format(cents/100);
 }
 export function blankData(){
-  return {schema:SCHEMA,tasks:[],events:[],expenses:[],habits:[],habitLogs:{},goals:[],milestones:[],
+  return {schema:SCHEMA,tasks:[],events:[],expenses:[],habits:[],habitLogs:{},goals:[],milestones:[],budgets:{},
     journal:{},reviews:[],world:[],coaching:[],
     nudge:{optIn:false,quietStart:"22:00",quietEnd:"08:00",candidates:[],history:[]}};
 }
@@ -60,7 +60,8 @@ function uniqueRecords(arr,label,max=2000){
 export function validateData(d){
   if(!plain(d)||d.schema!==SCHEMA)throw Error("Unsupported data schema");
   for(const key of ["tasks","events","expenses","habits","goals","milestones","reviews","world","coaching"])uniqueRecords(d[key],key);
-  if(!plain(d.habitLogs)||!plain(d.journal)||!plain(d.nudge))throw Error("Invalid data maps");
+  if(!plain(d.habitLogs)||!plain(d.journal)||!plain(d.nudge)||!plain(d.budgets))throw Error("Invalid data maps");
+  for(const [month,cents] of Object.entries(d.budgets))if(!/^\d{4}-(0[1-9]|1[0-2])$/.test(month)||!Number.isSafeInteger(cents)||cents<0||cents>1_000_000_000)throw Error("Invalid monthly budget");
   const goalIds=new Set(d.goals.map(x=>x.id)),habitIds=new Set(d.habits.map(x=>x.id));
   for(const t of d.tasks){
     if(!textOk(t.title,180)||!t.title.trim()||!Number.isInteger(t.minutes)||t.minutes<1||t.minutes>600||
