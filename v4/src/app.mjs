@@ -169,11 +169,29 @@ function money(v){
   });
   const browse=card(v,"Monthly spending"),pick=field(browse,"Month",month,"month");
   pick.addEventListener("change",()=>{month=pick.value;render()});
+  const existingBudget=d.budgets[month]??0;
+  const budgetInput=field(browse,"Budget for "+month+" (₹)",existingBudget?(existingBudget/100).toFixed(2):"","text");
+  button(actions(browse),"Save monthly budget",()=>{
+    const amount=budgetInput.value.trim()?centsFromInput(budgetInput.value):0;
+    return change(d=>{d.budgets[month]=amount});
+  },"btn soft");
+  const monthlySpend=d.expenses.filter(x=>x.date.startsWith(month)).reduce((sum,x)=>sum+x.amountCents,0);
+  node(browse,"p",existingBudget?"Budget: "+rupees(existingBudget)+" · Remaining: "+rupees(existingBudget-monthlySpend):"No monthly budget set","muted");
   const items=d.expenses.filter(x=>x.date.startsWith(month)).sort((a,b)=>b.date.localeCompare(a.date));
   node(browse,"div",rupees(items.reduce((s,x)=>s+x.amountCents,0)),"money-total");
   for(const e of items){
     row(browse,e.title,e.date+" · "+e.category+" · "+rupees(e.amountCents),r=>button(r,"×",()=>confirmDelete("expense",d=>{d.expenses=d.expenses.filter(x=>x.id!==e.id)}),"btn small ghost"));
   }
+  button(actions(browse),"Export monthly CSV (plaintext)",()=>{
+    if(!confirm("CSV files are NOT encrypted. Export this month's expenses?"))return;
+    const cell=v=>{
+      const raw=String(v??"");
+      const safe=/^[\\t\\r\\n ]*[=+@-]/.test(raw)?"'"+raw:raw;
+      return '"'+safe.replace(/"/g,'""')+'"';
+    };
+    const rows=[["Date","Description","Category","Amount INR"],...items.map(x=>[x.date,x.title,x.category,(x.amountCents/100).toFixed(2)])];
+    download("reborn-expenses-"+month+".csv","\\uFEFF"+rows.map(row=>row.map(cell).join(",")).join("\\r\\n"),"text/csv;charset=utf-8");
+  },"btn ghost");
 }
 function habits(v){
   const d=state(),c=card(v,"New habit"),title=field(c,"Habit"),goal=select(c,"Related goal",goalOptions(),"");
@@ -300,7 +318,7 @@ function download(name,text,type){
   const blob=new Blob([text],{type}),url=URL.createObjectURL(blob),a=document.createElement("a");
   a.href=url;a.download=name;document.body.append(a);a.click();a.remove();
   setTimeout(()=>URL.revokeObjectURL(url),12000);
-  message("Encrypted backup download requested. Verify browser Downloads.");
+  message("File download requested. Verify browser Downloads; CSV exports are plaintext.");
 }
 $("vault-shortcut").addEventListener("click",()=>navigate("Privacy"));
 
