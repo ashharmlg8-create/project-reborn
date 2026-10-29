@@ -280,7 +280,7 @@ function privacy(v){
   if(!vaultReady){node(c,"p","Secure IndexedDB storage unavailable until run on HTTPS or localhost.","notice");}
   else if(mode==="demo"){
     node(c,"p","Demo entries are temporary. Creating a vault starts with empty records, not demo examples.","muted");
-    button(actions(c),"Create vault",async()=>{await vault.create(pass.value);mode="vault";pass.value="";render();message("Encrypted vault created")});
+    button(actions(c),"Create vault",async()=>{if(!confirm("Start a separate empty V4 encrypted vault? Demo data will not be imported."))return;await vault.create(pass.value);mode="vault";pass.value="";render();message("Encrypted vault created")});
     button(actions(c),"Unlock vault",async()=>{await vault.unlock(pass.value);mode="vault";pass.value="";render();message("Vault unlocked")},"btn soft");
     const file=field(c,"Restore encrypted V4 backup into empty vault","","file");file.accept=".json";
     button(actions(c),"Restore to empty vault",async()=>{if(!file.files?.[0])throw Error("Select a backup");if(!confirm("Restore only if this V4 vault is empty?"))return;
@@ -292,8 +292,8 @@ function privacy(v){
   node(v,"p","No server sync, password recovery or AI API. Do not lose your vault password. CSV or copied text is not encrypted.","notice");
 }
 function showMore(){
-  const box=$("more-dialog");box.replaceChildren();
-  for(const r of routes)button(box,r,()=>{box.close();navigate(r)},"btn soft");
+  const box=$("more-content");box.replaceChildren();
+  for(const r of routes)button(box,r,()=>{$("more-dialog").close();navigate(r)},"btn soft");
   box.showModal();
 }
 function download(name,text,type){
@@ -303,7 +303,7 @@ function download(name,text,type){
   message("Encrypted backup download requested. Verify browser Downloads.");
 }
 $("vault-shortcut").addEventListener("click",()=>navigate("Privacy"));
-$("mobile-more").addEventListener("click",showMore);
+
 render();
 (async()=>{
   try{await vault.init();vaultReady=true}
